@@ -1,0 +1,75 @@
+#menu {
+    background-color: #FFFFFF;
+    color: #000000;
+    height: 300px;
+    line-height: 120%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 300px;
+}
+#menu a {
+    display: block;
+    font-weight: normal;
+    text-decoration: none;
+}
+#menu ul {
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+}
+#menu li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+#menu li a {
+    background-image: url("../img/ha-header.jpg");
+    color: #000000;
+    display: block;
+    height: 25px;
+    padding: 5px 0 0 15px;
+    width: 285px;
+}
+#menu li li a {
+    background-image: none;
+    height: 18px;
+}
+#menu li a.closed {
+    background-image: url("../img/ha-header.jpg") !important;
+    color: #000000 !important;
+}
+#menu li.firstitem a.closed {
+    background-image: url("../img/ha-header-first.jpg") !important;
+    color: #000000 !important;
+}
+#menu li.lastitem a.closed {
+    background-image: url("../img/ha-header-last.jpg") !important;
+    color: #000000 !important;
+}
+#menu li li {
+    border-left: 1px solid #E5E5E5;
+    border-right: 1px solid #E5E5E5;
+    /*height: 175px;*/
+    padding: 0 15px;
+}
+#menu li a.opened {
+    background-image: url("../img/ha-header-active.jpg");
+    color: #FFFFFF;
+}
+#menu li li a.opened {
+    background-image: none;
+}
+#menu li.firstitem a.opened {
+    background-image: url("../img/ha-header-first-active.jpg");
+    color: #FFFFFF;
+}
+#menu li.lastitem li {
+    margin-bottom: -4px;
+}
+#menu li.lastitem ul {
+    background-image: url("../img/ha-footer.jpg");
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    padding-bottom: 4px;
+}

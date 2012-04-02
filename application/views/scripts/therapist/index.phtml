@@ -1,0 +1,46 @@
+<table>
+    <colgroup>
+        <col witdh="400">
+        <col width="200">
+    </colgroup>
+    <thead>
+    </thead>
+    <tbody>
+        <?php if(!count($this->therapists)): ?>
+            <tr>
+                <td colspan="2">
+                    <?php echo $this->translate('Currently the system does not contain any therapists'); ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php foreach ($this->therapists as $therapist): ?>
+            <tr id="therapist_<?php echo $therapist->getId(); ?>">
+                <td><?php echo $therapist->getName(); ?></td>
+                <td>
+                    <button id="update">Update</button>
+                    <script type="text/javascript">
+                        $(function() {
+                            $("tr#therapist_<?php echo $therapist->getId(); ?> button#update").button({icons: { primary: "ui-icon-tag" }});
+                            $("tr#therapist_<?php echo $therapist->getId(); ?> button#update").click(function() {
+                                $.ajax({
+                                    url: '<?php echo $this->url(array('action' => 'update', 'id' => $therapist->getId(), 'format' => 'html')); ?>',
+                                    success: function(data) {
+                                        $("#dialog").html(data);
+                                        $("#dialog").dialog({
+                                            title: 'Update therapist',
+                                            modal: true, 
+                                            resizable: false,
+                                            autoOpen: true,
+                                            open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                                            close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); }
+                                        });
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

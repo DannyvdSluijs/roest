@@ -1,0 +1,53 @@
+<table>
+    <colgroup>
+        <col witdh="400">
+        <col width="300">
+    </colgroup>
+    <thead>
+    </thead>
+    <tbody>
+        <?php if(!count($this->customers)): ?>
+            <tr>
+                <td colspan="2">
+                    <?php echo $this->translate('Currently the system does not contain any customers'); ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php if(count($this->customers)): foreach ($this->customers as $customer): ?>
+            <tr id="customer_<?php echo $customer->getId(); ?>">
+                <td><?php echo $customer->getName(); ?></td>
+                <td>
+                    <button id="update">Update</button>
+                    <button id="view">View</button>
+                    <script type="text/javascript">
+                        $(function() {
+                            $("tr#customer_<?php echo $customer->getId(); ?> button#view").button({icons: { primary: "ui-icon-tag" }});
+                            $("tr#customer_<?php echo $customer->getId(); ?> button#view").click(function() {
+                                window.location = '<?php echo $this->url(array('action' => 'view', 'id' => $customer->getId())); ?>' 
+                            }); 
+                        });
+                        $(function() {
+                            $("tr#customer_<?php echo $customer->getId(); ?> button#update").button({icons: { primary: "ui-icon-tag" }});
+                            $("tr#customer_<?php echo $customer->getId(); ?> button#update").click(function() {
+                                $.ajax({
+                                    url: '<?php echo $this->url(array('action' => 'update', 'id' => $customer->getId(), 'format' => 'html')); ?>',
+                                    success: function(data) {
+                                        $("#dialog").html(data);
+                                        $("#dialog").dialog({
+                                            title: 'Update customer',
+                                            modal: true, 
+                                            resizable: false,
+                                            autoOpen: true,
+                                            open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                                            close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); }
+                                        });
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        <?php endforeach; endif; ?>
+    </tbody>
+</table>

@@ -1,0 +1,37 @@
+<table>
+    <colgroup>
+        <col witdh="100">
+        <col width="100">
+        <col width="200">
+        <col width="300">
+    </colgroup>
+    <thead>
+    </thead>
+    <tbody>
+        <?php if(!count($this->invoices)): ?>
+            <tr>
+                <td colspan="3">
+                    <?php echo $this->translate('Currently the system does not contain any invoices'); ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php if(count($this->invoices)): foreach ($this->invoices as $invoice): ?>
+            <tr id="invoice_<?php echo $invoice->getId(); ?>">
+                <td><?php echo $invoice->getDate()->toString('dd-MM-yyyy'); ?></td>
+                <td><?php echo $invoice->getPaid() ? 'Paid' : 'Unpaid'; ?></td>
+                <td><?php echo $invoice->getCustomer(); ?></td>
+                <td>
+                    <button id="view">View</button>
+                    <script type="text/javascript">
+                        $(function() {
+                            $("tr#invoice_<?php echo $invoice->getId(); ?> button#view").button({icons: { primary: "ui-icon-tag" }});
+                            $("tr#invoice_<?php echo $invoice->getId(); ?> button#view").click(function() {
+                                window.location = '<?php echo $this->url(array('action' => 'view', 'id' => $invoice->getId())); ?>' 
+                            }); 
+                        });
+                    </script>
+                </td>
+            </tr>
+        <?php endforeach; endif; ?>
+    </tbody>
+</table>

@@ -1,0 +1,28 @@
+<table>
+    <thead>
+        <tr>
+            <th><?php echo $this->translate('Invoice number'); ?></th>
+            <th><?php echo $this->translate('Date'); ?></th>
+            <th><?php echo $this->translate('Price'); ?></th>
+            <th><?php echo $this->translate('Reminders'); ?></th>
+            <th><?php echo $this->translate('Customer'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->invoices as $invoice): ?>
+            <?php
+                /* is the invoice due */
+                if (!$invoice->isDue()) {
+                    continue;
+                } 
+            ?>
+            <tr>
+                <td><?php echo $invoice->getId(); ?></td>
+                <td><?php echo $invoice->getDate()->toString('dd-MM-yyyy'); ?></td>
+                <td><?php echo $invoice->getTotalPrice(); ?></td>
+                <td><?php echo $invoice->getReminder(); ?></td>
+                <td><?php echo $invoice->getCustomer(); ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

@@ -1,0 +1,128 @@
+<h2><?php echo $this->translate('Customer'); ?>: <?php echo $this->customer->getName(); ?></h2>
+<h5><?php echo $this->customer->getAddress(); ?>, <?php echo $this->customer->getPostalCode(); ?> <?php echo $this->customer->getCity(); ?></h5>
+<h5><?php echo $this->customer->getTelephone(); ?></h5>
+<table>
+    <colgroup>
+        <col witdh="200">
+        <col witdh="200">
+        <col witdh="200">
+        <col width="200">
+    </colgroup>
+    <thead>
+        <tr>
+            <th><?php echo $this->translate('InsuranceAgency'); ?></th>
+            <th><?php echo $this->translate('Polis number'); ?></th>
+            <th><?php echo $this->translate('Since'); ?></th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php $customerInsurances = $this->customer->getCustomerInsurances(); ?>
+        <?php if(!count($customerInsurances)): ?>
+            <tr>
+                <td colspan="2">
+                    <?php echo $this->translate('Currently the system does not contain any customer insurances for current customer'); ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php foreach ($customerInsurances as $customerInsurance): ?>
+            <tr id="therapyPrice_<?php echo $customerInsurance->getInsuranceAgencyId(); ?>_<?php echo $customerInsurance->getFromDate()->toString('ddMMyyyy'); ?>">
+                <td><?php echo $customerInsurance->getInsuranceAgency()->__toString(); ?></td>
+                <td><?php echo $customerInsurance->getPolisNumber(); ?></td>
+                <td><?php echo $customerInsurance->getFromDate()->toString('dd-MM-yyyy'); ?></td>
+                <td>
+                    <?php if (count($customerInsurances) > 1): ?>
+                        <button id="delete"><?php echo $this->translate('Delete'); ?></button>
+                        <script type="text/javascript">
+                            $(function() {
+                                $("tr#therapyPrice_<?php echo $customerInsurance->getInsuranceAgencyId(); ?>_<?php echo $customerInsurance->getFromDate()->toString('ddMMyyyy'); ?> button#delete").button({icons: { primary: "ui-icon-trash" }});
+                                $("tr#therapyPrice_<?php echo $customerInsurance->getInsuranceAgencyId(); ?>_<?php echo $customerInsurance->getFromDate()->toString('ddMMyyyy'); ?> button#delete").click(function() {
+                                    $("#dialog").html('Are you sure you want to delete <?php echo $customerInsurance; ?> ? ');
+                                    $("#dialog").dialog({
+                                        title: 'Confirmation required:',
+                                        modal: true, 
+                                        resizable: false,
+                                        buttons: [
+                                            {
+                                                text: 'Cancel',
+                                                click: function() { 
+                                                    $(this).dialog('close');
+                                                }
+                                            },
+                                            {
+                                                text: 'Confirm',
+                                                click: function() {
+                                                    $.ajax({
+                                                        url: '<?php echo 
+                                                                $this->url(
+                                                                    array(
+                                                                        'action' => 'deletecustomerinsurance', 
+                                                                        'id' => $customerInsurance->getCustomerId(), 
+                                                                        'insuranceAgencyId' => $customerInsurance->getInsuranceAgencyId(), 
+                                                                        'fromDate' => $customerInsurance->getFromDate()->toString('dd-MM-yyyy'), 
+                                                                        'format' => 'json')); 
+                                                               ?>',
+                                                        success: function(data) {
+                                                            $.ajax({
+                                                                url: '<?php echo $this->url(array('action' => 'view', 'id' => $customerInsurance->getCustomerId(), 'format' => 'html')); ?>',
+                                                                success: function(data) {
+                                                                    $('#dialog').dialog('close');
+                                                                    $('#main-content').block();
+                                                                    setTimeout(
+                                                                        function() {
+                                                                            $("#main-content").fadeOut();
+                                                                            $("#main-content").html(data);
+                                                                            $('#main-content').unblock();
+                                                                            $("#main-content").fadeIn();
+                                                                        },
+                                                                        250
+                                                                    );
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        ]
+                                    });
+                                    $("#dialog").dialog({close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); } });
+                                    $("#dialog").dialog("open");
+                                });
+                            });
+                        </script>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="3">&nbsp;</th>
+        </tr>
+    </tfoot>
+</table>
+<button id="create"><?php echo $this->translate('Create'); ?></button>
+<script type="text/javascript">
+    $(function() {
+        $("button#create").button({icons: { primary: "ui-icon-plusthick" }});
+
+        $("button#create").click(function() {
+            $.ajax({
+                url: '<?php echo $this->url(array('action' => 'addcustomerinsurance', 'format' => 'html')); ?>',
+                success: function(data) {
+                    $("#dialog").html(data);
+                    $("#dialog").dialog(
+                        {
+                            title: 'Add new customer insurance',
+                            modal: true, 
+                            resizable: false,
+                            autoOpen: true,
+                            open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                            close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); }
+                        }
+                    );
+                }
+            });
+        });
+    });
+</script>

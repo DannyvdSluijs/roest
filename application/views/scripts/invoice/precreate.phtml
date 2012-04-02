@@ -1,0 +1,33 @@
+<table>
+    <colgroup>
+        <col witdh="400">
+        <col width="300">
+    </colgroup>
+    <thead>
+    </thead>
+    <tbody>
+        <?php if(!count($this->customers)): ?>
+            <tr>
+                <td colspan="2">
+                    <?php echo $this->translate('Currently all past appointments have been invoiced'); ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php if(count($this->customers)): foreach ($this->customers as $customer): ?>
+            <tr id="customer_<?php echo $customer->getId(); ?>">
+                <td><?php echo $customer->getName(); ?></td>
+                <td>
+                    <button id="create">Create</button>
+                    <script type="text/javascript">
+                        $(function() {
+                            $("tr#customer_<?php echo $customer->getId(); ?> button#create").button({icons: { primary: "ui-icon-tag" }});
+                            $("tr#customer_<?php echo $customer->getId(); ?> button#create").click(function() {
+                                window.location = '<?php echo $this->url(array('action' => 'create', 'id' => $customer->getId())); ?>' 
+                            }); 
+                        });
+                    </script>
+                </td>
+            </tr>
+        <?php endforeach; endif; ?>
+    </tbody>
+</table>

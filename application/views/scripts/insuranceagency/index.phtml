@@ -1,0 +1,97 @@
+<table>
+    <colgroup>
+        <col witdh="400">
+        <col width="300">
+    </colgroup>
+    <thead>
+    </thead>
+    <tbody>
+        <?php if(!count($this->insuranceAgencies)): ?>
+            <tr>
+                <td colspan="2">
+                    <?php echo $this->translate('Currently the system does not contain any insuranceAgencies'); ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php if(count($this->insuranceAgencies)): foreach ($this->insuranceAgencies as $insuranceAgency): ?>
+            <tr id="insuranceAgency_<?php echo $insuranceAgency->getId(); ?>">
+                <td><?php echo $insuranceAgency->getName(); ?></td>
+                <td>
+                    <button id="update">Update</button>
+                    <button id="delete">Delete</button>
+                    <script type="text/javascript">
+                        $(function() {
+                            $("tr#insuranceAgency_<?php echo $insuranceAgency->getId(); ?> button#view").button({icons: { primary: "ui-icon-tag" }});
+                         });
+                    </script>
+                    <script type="text/javascript">
+                        $(function() {
+                            $("tr#insuranceAgency_<?php echo $insuranceAgency->getId(); ?> button#update").button({icons: { primary: "ui-icon-tag" }});
+                            $("tr#insuranceAgency_<?php echo $insuranceAgency->getId(); ?> button#update").click(function() {
+                                $.ajax({
+                                    url: '<?php echo $this->url(array('action' => 'update', 'id' => $insuranceAgency->getId(), 'format' => 'html')); ?>',
+                                    success: function(data) {
+                                        $("#dialog").html(data);
+                                        $("#dialog").dialog({
+                                            title: 'Update insuranceAgency',
+                                            modal: true, 
+                                            resizable: false,
+                                            autoOpen: true,
+                                            open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                                            close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); }
+                                        });
+                                    }
+                                });
+                            });
+                            $("tr#insuranceAgency_<?php echo $insuranceAgency->getId(); ?> button#delete").button({icons: { primary: "ui-icon-trash" }});
+                            $("tr#insuranceAgency_<?php echo $insuranceAgency->getId(); ?> button#delete").click(function() {
+                                $("#dialog").html('Are you sure you want to delete <?php echo $insuranceAgency->getName(); ?> ? ');
+                                $("#dialog").dialog({
+                                    title: 'Confirmation required:',
+                                    modal: true, 
+                                    resizable: false,
+                                    buttons: [
+                                        {
+                                            text: 'Cancel',
+                                            click: function() { 
+                                                $(this).dialog('close');
+                                            }
+                                        },
+                                        {
+                                            text: 'Confirm',
+                                            click: function() {
+                                                $.ajax({
+                                                    url: '<?php echo $this->url(array('action' => 'delete', 'id' => $insuranceAgency->getId(), 'format' => 'html')); ?>',
+                                                    success: function(data) {
+                                                        $.ajax({
+                                                            url: '<?php echo $this->url(array('action' => 'index', 'format' => 'html')); ?>',
+                                                            success: function(data) {
+                                                                $('#dialog').dialog('close');
+                                                                $('#main-content').block();
+                                                                setTimeout(
+                                                                    function() {
+                                                                        $("#main-content").fadeOut();
+                                                                        $("#main-content").html(data);
+                                                                        $('#main-content').unblock();
+                                                                        $("#main-content").fadeIn();
+                                                                    },
+                                                                    250
+                                                                );
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    ]
+                                });
+                                $("#dialog").dialog({close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); } });
+                                $("#dialog").dialog("open");
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        <?php endforeach; endif; ?>
+    </tbody>
+</table>

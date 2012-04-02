@@ -1,0 +1,16 @@
+<table>
+    <thead>
+        <tr>
+            <th><?php echo $this->translate('City'); ?></th>
+            <th><?php echo $this->translate('Number'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->data as $data): ?>
+            <tr>
+                <td><?php echo $data->city; ?></td>
+                <td><?php echo $data->number; ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

@@ -1,0 +1,34 @@
+<?php
+
+$id = rand();
+$this->form->setAction($this->url(array( 'format' => 'json')))->setName($id);
+echo $this->form;
+?>
+<script type="text/javascript">
+    $("form#<?php echo $id; ?>").submit(function() {
+        $("#dialog").block({message: null});
+        $.post(
+            '<?php echo $this->url(array('format' => 'json')); ?>',
+            $("form#<?php echo $id; ?>").serialize(), 
+            function(data) {
+                if (data.result) {
+                    $('#dialog').dialog('close');
+                    $('#dialog').unblock();
+                    $('#main-content').block({message: 'Refreshing'});
+                    $.ajax({
+                        url: '<?php echo $this->url(array('action' => 'index', 'format' => 'html')); ?>',
+                        success: function(data) {
+                            $("#main-content").html(data);
+                            $('#main-content').unblock();
+                        }
+                    });
+                 }
+            },
+            'json'
+        );
+
+        return false;
+    });
+    $("form#<?php echo $id; ?> submit[type=submit]").button();
+</script>
+<?php echo $this->jQuery()->setRenderMode(ZendX_JQuery::RENDER_JQUERY_ON_LOAD); ?>

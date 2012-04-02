@@ -1,0 +1,114 @@
+<?php 
+    $businessRuleMapper = new Application_Model_BusinessRuleMapper(); 
+    $chamberOfCommerceNumber = $businessRuleMapper->getByKeyAndDate('kvknummer', $this->invoice->getDate());
+    $paymentDays = $businessRuleMapper->getByKeyAndDate('betaaltermijn', $this->invoice->getDate());
+    $bankAccountNumber = $businessRuleMapper->getByKeyAndDate('rekeningnummer', $this->invoice->getDate());
+    $telephoneNumber = $businessRuleMapper->getByKeyAndDate('telefoonnummer', $this->invoice->getDate());
+?>
+<div>
+    Roest Rust, Centrum voor Accupunctuur, Bioresonantie en Fysiotherapie</br>
+    Roerstraat 1<br>
+    3522 GS Utrecht<br>
+    Telnr : <?php echo $telephoneNumber->getValue(); ?><br>
+    Reknr : <?php echo $bankAccountNumber->getValue(); ?><br>
+</div>
+<br>
+<br>
+<div>
+    Factuurnummer: <?php echo $this->invoice->getId(); ?><br>
+    Factuurdatum: <?php echo $this->invoice->getDate()->toString('dd-MM-yyyy'); ?><br>
+</div>
+<br>
+<br>
+<div>
+<div style="float: left;">
+    <b>Klant gegevens</b><br>
+    klantnr : <?php echo $this->invoice->getCustomer()->getId(); ?><br>
+    <?php echo $this->invoice->getCustomer()->getName(); ?></br>
+    <?php echo $this->invoice->getCustomer()->getAddress(); ?></br>
+    <?php echo $this->invoice->getCustomer()->getPostalCode(); ?>
+    <?php echo $this->invoice->getCustomer()->getCity(); ?><br>
+    <?php if ($this->invoice->getCustomer()->hasCustomerInsurance()): ?>
+        polisnr : <?php echo $this->invoice->getCustomer()->getCustomerInsuranceByDate($this->invoice->getDate())->getPolisNumber(); ?>
+    <?php else: ?>
+        polisnr : 
+    <?php endif; ?>
+</div>
+<div style="float: right;">
+    <b>Verzekeringsgegevens</b><br>
+    <?php if ($this->invoice->getCustomer()->hasCustomerInsurance()): ?>
+        <?php echo $this->invoice->getCustomer()->getCustomerInsuranceByDate($this->invoice->getDate())->getInsuranceAgency()->getName(); ?><br>
+        <?php echo $this->invoice->getCustomer()->getCustomerInsuranceByDate($this->invoice->getDate())->getInsuranceAgency()->getAddress(); ?><br>
+        <?php echo $this->invoice->getCustomer()->getCustomerInsuranceByDate($this->invoice->getDate())->getInsuranceAgency()->getPostalCode(); ?><br>
+        <?php echo $this->invoice->getCustomer()->getCustomerInsuranceByDate($this->invoice->getDate())->getInsuranceAgency()->getCity(); ?><br>
+    <?php endif; ?>
+</div>
+<div style="clear: both"></div>
+<br>
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th><?php echo $this->translate('Date'); ?></th>
+                <th><?php echo $this->translate('Therapy'); ?></th>
+                <th><?php echo $this->translate('Therapy'); ?></th>
+                <th><?php echo $this->translate('Therapy'); ?></th>
+                <th><?php echo $this->translate('Therapist'); ?></th>
+                <th><?php echo $this->translate('Session duration'); ?></th>
+                <th><?php echo $this->translate('Session'); ?></th>
+            </tr>
+            <tr>
+                <th>&nbsp;</th>
+                <th><?php echo $this->translate('number'); ?></th>
+                <th><?php echo $this->translate('description'); ?></th>
+                <th><?php echo $this->translate('price per hour'); ?></th>
+                <th>&nbsp;</th>
+                <th>(<?php echo $this->translate('minutes'); ?>)</th>
+                <th><?php echo $this->translate('price'); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($this->appointments as $appointment): ?>
+                <tr>
+                    <td><?php echo $appointment->getDate()->toString('dd-MM-yyyy'); ?></td>
+                    <td><?php echo $appointment->getTherapyId(); ?></td>
+                    <td><?php echo $appointment->getTherapy()->getName(); ?></td>
+                    <td>&euro; <?php echo $appointment->getTherapy()->getTherapyPriceByDate($appointment->getDate())->getPricePerHour(); ?></td>
+                    <td><?php echo $appointment->getTherapist()->getName(); ?></td>
+                    <td><?php echo $appointment->getDuration(Application_Model_Appointment::DURATION_MINUTES); ?></td>
+                    <td>&euro; <?php echo $appointment->getPrice(); ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+        <thead>
+            <tr>
+                <th colspan="5">&nbsp;</th>
+                <th><?php echo $this->translate('Total excl. VAT'); ?></th>
+                <th><?php echo $this->invoice->getTotalPriceExcludingVat(); ?></th>
+            </tr>
+            <tr>
+                <th colspan="5">&nbsp;</th>
+                <th><?php echo $this->translate('VAT'); ?><?php ?>%</th>
+                <th><?php echo $this->invoice->getVat(); ?></th>
+            </tr>
+            <tr>
+                <th colspan="5">&nbsp;</th>
+                <th><?php echo $this->translate('Total incl. VAT'); ?></th>
+                <th><?php echo $this->invoice->getTotalPrice(); ?></th>
+            </tr>
+        </thead>
+    </table>
+    <div>
+        <?php 
+            $payBefore = clone $this->invoice->getDate();
+            $payBefore->add($paymentDays->getValue(), Zend_Date::DAY);
+            echo $this->translate(
+                'To be paid before %1s on bank account mentioned in the header (To be paid within %2s days)',
+                $payBefore->toString('dd-MM-yyyy'),
+                $paymentDays->getValue()
+            ); 
+        ?>
+        <br><br>
+        <?php echo $this->translate('Know at the Amsterdam Chamber of Commerce under registration number %1s', $chamberOfCommerceNumber->getValue()); ?>
+    </div>
+</div>

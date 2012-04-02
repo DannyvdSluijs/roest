@@ -1,0 +1,76 @@
+<table>
+    <colgroup>
+        <col witdh="400">
+        <col width="200">
+    </colgroup>
+    <thead>
+    </thead>
+    <tbody>
+        <?php if(!count($this->businessRules)): ?>
+            <tr>
+                <td colspan="2">
+                    <?php echo $this->translate('Currently the system does not contain any businessRules'); ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php if(count($this->businessRules)): foreach ($this->businessRules as $businessRule): ?>
+            <tr id="businessRule_<?php echo $businessRule->getId(); ?>">
+                <td><?php echo $businessRule->getKey(); ?></td>
+                <td><?php echo $businessRule->getValue(); ?></td>
+                <td><?php echo $businessRule->getFromDate()->toString('dd-MM-yyyy'); ?></td>
+                <td>
+                    <button id="delete">Delete</button>
+                    <script type="text/javascript">
+                        $(function() {
+                            $("tr#businessRule_<?php echo $businessRule->getId(); ?> button#delete").button({icons: { primary: "ui-icon-trash" }});
+                            $("tr#businessRule_<?php echo $businessRule->getId(); ?> button#delete").click(function() {
+                                $("#dialog").html('Are you sure you want to delete <?php echo $businessRule->__toString(); ?> ? ');
+                                $("#dialog").dialog({
+                                    title: 'Confirmation required:',
+                                    modal: true, 
+                                    resizable: false,
+                                    buttons: [
+                                        {
+                                            text: 'Cancel',
+                                            click: function() { 
+                                                $(this).dialog('close');
+                                            }
+                                        },
+                                        {
+                                            text: 'Confirm',
+                                            click: function() {
+                                                $.ajax({
+                                                    url: '<?php echo $this->url(array('action' => 'delete', 'key' => $businessRule->getKey(), 'fromDate' => $businessRule->getFromDate()->toString('dd-MM-yyyy'), 'format' => 'html')); ?>',
+                                                    success: function(data) {
+                                                        $.ajax({
+                                                            url: '<?php echo $this->url(array('action' => 'index', 'format' => 'html')); ?>',
+                                                            success: function(data) {
+                                                                $('#dialog').dialog('close');
+                                                                $('#main-content').block();
+                                                                setTimeout(
+                                                                    function() {
+                                                                        $("#main-content").fadeOut();
+                                                                        $("#main-content").html(data);
+                                                                        $('#main-content').unblock();
+                                                                        $("#main-content").fadeIn();
+                                                                    },
+                                                                    250
+                                                                );
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    ]
+                                });
+                                $("#dialog").dialog({close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); } });
+                                $("#dialog").dialog("open");
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        <?php endforeach; endif; ?>
+    </tbody>
+</table>

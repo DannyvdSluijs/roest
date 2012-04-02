@@ -1,0 +1,20 @@
+<table>
+    <thead>
+        <tr>
+            <th><?php echo $this->translate('Therapist'); ?></th>
+            <th><?php echo $this->translate('Therapy'); ?></th>
+            <th><?php echo $this->translate('Number'); ?></th>
+            <th><?php echo $this->translate('Duration'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->data as $data): ?>
+            <tr>
+                <td><?php echo $data->therapy; ?></td>
+                <td><?php echo $data->therapist; ?></td>
+                <td><?php echo $data->number; ?></td>
+                <td><?php echo $data->duration; ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

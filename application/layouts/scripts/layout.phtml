@@ -1,0 +1,308 @@
+<?php
+
+    $this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
+    $this->headMeta()->appendHttpEquiv('Pragma', 'no-cache');
+    $this->headMeta()->appendHttpEquiv('Cache-Control', 'no-cache');
+    $this->headMeta()->appendHttpEquiv('Pragma-Directive', 'no-cache');
+    $this->headMeta()->appendHttpEquiv('Cache-Directive', 'no-cache');
+    $this->headMeta()->appendHttpEquiv('robots', 'noindex,follow');
+    $this->headTitle()->setSeparator(' - ');
+    $this->headTitle('Roest Finance');
+    echo $this->doctype(); 
+?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <?php 
+            echo $this->headMeta();
+            echo $this->headTitle();
+            $this->headLink()->prependStylesheet($this->baseUrl().'/css/blueprint/screen.css');
+            $this->headLink()->prependStylesheet($this->baseUrl().'/css/blueprint/plugins/fancy-type/screen.css');
+            $this->headLink()->appendStylesheet('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/smoothness/jquery-ui.css');
+            $this->headLink()->appendStylesheet($this->baseUrl().'/css/ui.hoveraccordion.css');
+            echo $this->headLink();
+            $this->headScript()->appendFile('http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js');
+            $this->headScript()->appendFile('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js');
+            $this->headScript()->appendFile($this->baseUrl().'/js/jquery-blockui/jquery.blockUI.js');
+            $this->headScript()->appendFile($this->baseUrl().'/js/jquery-hoveraccordion/jquery.hoveraccordion.min.js');
+            echo $this->headScript(); 
+            //echo $this->jQuery()->setRenderMode(ZendX_JQuery::RENDER_JQUERY_ON_LOAD);
+        ?>
+
+        <script type="text/javascript">
+            $.blockUI({ defaults: { css: { 
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            } } });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="alt" id="logo">Roest Finance</h1>
+            <script type="text/javascript">
+                $('h1#logo').click(function() { window.location = '<?php echo $this->url(array('controller' => 'index', 'action' => 'index')); ?>' }); 
+            </script>
+            <hr>
+            <h2>Project Databases - 2012 - ID2A - Groep 2: Vincent, Roy, Jan, Danny</h2>
+            <hr>
+            <div class="span-7 colborder">
+                <ul id="menu">
+                    <li class="firstitem">
+                        <a class="header closed" href="#"><?php echo $this->translate('Customers'); ?></a>
+                        <ul>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'customer', 'action' => 'index')); ?>" id="customerView" >
+                                    <?php echo $this->translate('View customers'); ?>
+                                </a>
+                            </li>
+                            <li><a href="#" id="customerCreate" ><?php echo $this->translate('Create new customer'); ?></a></li>
+                            <script type="text/javascript">
+                                $("a#customerCreate").click(function() {
+                                    $.ajax({
+                                        url: '<?php echo $this->url(array('controller' => 'customer', 'action' => 'create', 'format' => 'html')); ?>',
+                                        success: function(data) {
+                                            $("#dialog").html(data);
+                                            $("#dialog").dialog(
+                                                {
+                                                    title: "Create new customer",
+                                                    modal: true, 
+                                                    resizable: false,
+                                                    autoOpen: true,
+                                                    open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                                                    close: function(event, ui) { $(this).dialog("destroy"); $(this).html(""); }
+                                                }
+                                            );
+                                        }
+                                    });
+                                });
+                            </script>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="header closed" href="#"><?php echo $this->translate('Appointments'); ?></a>
+                        <ul>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'appointment', 'action' => 'index')); ?>" id="appointmentView" >
+                                    <?php echo $this->translate('View appointments'); ?>
+                                </a>
+                            </li>
+                            <li><a href="#" id="appointmentCreate" ><?php echo $this->translate('Create new appointment'); ?></a></li>
+                            <script type="text/javascript">
+                                $("a#appointmentCreate").click(function() {
+                                    $.ajax({
+                                        url: '<?php echo $this->url(array('controller' => 'appointment', 'action' => 'create', 'format' => 'html')); ?>',
+                                        success: function(data) {
+                                            $("#dialog").html(data);
+                                            $("#dialog").dialog(
+                                                {
+                                                    title: 'Create new appointment',
+                                                    modal: true, 
+                                                    resizable: false,
+                                                    autoOpen: true,
+                                                    open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                                                    close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); }
+                                                }
+                                            );
+                                        }
+                                    });
+                                });
+                            </script>
+                        </ul>
+                    </li>
+                    </li>
+                    <li>
+                        <a class="header closed" href="#"><?php echo $this->translate('Invoices'); ?></a>
+                        <ul>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'invoice', 'action' => 'precreate')); ?>" id="invoicePreCreate" >
+                                    <?php echo $this->translate('Generate invoices'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'invoice', 'action' => 'index')); ?>" id="invoiceIndex" >
+                                    <?php echo $this->translate('View invoices'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'invoice', 'action' => 'process')); ?>" id="invoiceProcess" >
+                                    <?php echo $this->translate('Process paid invoices'); ?>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="header closed" href="#"><?php echo $this->translate('Therapists'); ?></a>
+                        <ul>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'therapist', 'action' => 'index')); ?>" id="therapistView" >
+                                    <?php echo $this->translate('View therapist'); ?>
+                                </a>
+                            </li>
+                            <li><a href="#" id="therapistCreate" ><?php echo $this->translate('Create new therapist'); ?></a></li>
+                            <script type="text/javascript">
+                                $("a#therapistCreate").click(function() {
+                                    $.ajax({
+                                        url: '<?php echo $this->url(array('controller' => 'therapist', 'action' => 'create', 'format' => 'html')); ?>',
+                                        success: function(data) {
+                                            $("#dialog").html(data);
+                                            $("#dialog").dialog(
+                                                {
+                                                    title: 'Create new therapist',
+                                                    modal: true, 
+                                                    resizable: false,
+                                                    autoOpen: true,
+                                                    open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                                                    close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); }
+                                                }
+                                            );
+                                        }
+                                    });
+                                });
+                            </script>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="header closed" href="#"><?php echo $this->translate('Therapies'); ?></a>
+                        <ul>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'therapy', 'action' => 'index')); ?>" id="therapyView" >
+                                    <?php echo $this->translate('View therapies'); ?>
+                                </a>
+                            </li>
+                            <li><a href="#" id="therapyCreate" ><?php echo $this->translate('Create new therapy'); ?></a></li>
+                            <script type="text/javascript">
+                                $("a#therapyCreate").click(function() {
+                                    $.ajax({
+                                        url: '<?php echo $this->url(array('controller' => 'therapy', 'action' => 'create', 'format' => 'html')); ?>',
+                                        success: function(data) {
+                                            $("#dialog").html(data);
+                                            $("#dialog").dialog(
+                                                {
+                                                    title: 'Create new therapy',
+                                                    modal: true, 
+                                                    resizable: false,
+                                                    autoOpen: true,
+                                                    open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                                                    close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); }
+                                                }
+                                            );
+                                        }
+                                    });
+                                });
+                            </script>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="header closed" href="#"><?php echo $this->translate('Insurance Agencies'); ?></a>
+                        <ul>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'insuranceagency', 'action' => 'index')); ?>" id="insuranceAgencyView" >
+                                    <?php echo $this->translate('View insurancy agencies'); ?>
+                                </a>
+                            </li>
+                            <li><a href="#" id="insuranceAgencyCreate" ><?php echo $this->translate('Create new insurance agency'); ?></a></li>
+                            <script type="text/javascript">
+                                $("a#insuranceAgencyCreate").click(function() {
+                                    $.ajax({
+                                        url: '<?php echo $this->url(array('controller' => 'insuranceagency', 'action' => 'create', 'format' => 'html')); ?>',
+                                        success: function(data) {
+                                            $("#dialog").html(data);
+                                            $("#dialog").dialog(
+                                                {
+                                                    title: 'Create new insurance agency',
+                                                    modal: true, 
+                                                    resizable: false,
+                                                    autoOpen: true,
+                                                    open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                                                    close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); }
+                                                }
+                                            );
+                                        }
+                                    });
+                                });
+                            </script>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="header closed" href="#"><?php echo $this->translate('Business rules'); ?></a>
+                        <ul>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'businessrule', 'action' => 'index')); ?>" id="business" >
+                                    <?php echo $this->translate('View'); ?>
+                                </a>
+                            </li>
+                            <li><a href="#" id="businessruleCreate" ><?php echo $this->translate('Create new business rule'); ?></a></li>
+                            <script type="text/javascript">
+                                $("a#businessruleCreate").click(function() {
+                                    $.ajax({
+                                        url: '<?php echo $this->url(array('controller' => 'businessrule', 'action' => 'create', 'format' => 'html')); ?>',
+                                        success: function(data) {
+                                            $("#dialog").html(data);
+                                            $("#dialog").dialog(
+                                                {
+                                                    title: 'Create new business rule',
+                                                    modal: true, 
+                                                    resizable: false,
+                                                    autoOpen: true,
+                                                    open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                                                    close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); }
+                                                }
+                                            );
+                                        }
+                                    });
+                                });
+                            </script>
+                        </ul>
+                    </li>
+                    <li class="lastitem">
+                        <a class="header closed" href="#"><?php echo $this->translate('Reports'); ?></a>
+                        <ul>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'report', 'action' => 'due')); ?>" id="reportDue" >
+                                    <?php echo $this->translate('Invoices due'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'report', 'action' => 'cities')); ?>" id="reportCities" >
+                                    <?php echo $this->translate('Customer cities'); ?>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?php echo $this->url(array('controller' => 'report', 'action' => 'therapist')); ?>" id="reportTherapists" >
+                                    <?php echo $this->translate('Therapists'); ?>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="span-15 last" id="main-content">
+                <?php echo $this->layout()->content; ?>
+            </div>
+        </div>
+        <div id="dialog" title="Dialog">
+        </div>
+    </body>
+    <?php
+        $menuItems = array(
+            1 => 'customer',
+            'appointment',
+            'invoice',
+            'therapist',
+            'therapy',
+            'insuranceagency',
+            'businessrule',
+            'report'
+        );
+        $controllerName = Zend_Controller_Front::getInstance()->getRequest()->getControllerName();
+        if (($item = array_search($controllerName, $menuItems)) === false) {
+            $item = 1;
+        }
+    ?>
+    <script type="text/javascript">$(window).load(function () { $('input[type=submit]').button(); });</script>
+    <script type="text/javascript">$(document).ready(function(){ $('#menu').hoverAccordion({ keepHeight: false, activateItem: <?php echo $item; ?>, speed: 'fast' }); }); </script>
+</html>

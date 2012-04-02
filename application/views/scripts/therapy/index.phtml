@@ -1,0 +1,52 @@
+<table>
+    <colgroup>
+        <col witdh="400">
+        <col width="200">
+    </colgroup>
+    <thead>
+    </thead>
+    <tbody>
+        <?php if(!count($this->therapies)): ?>
+            <tr>
+                <td colspan="2">
+                    <?php echo $this->translate('Currently the system does not contain any therapy'); ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php foreach ($this->therapies as $therapy): ?>
+            <tr id="therapy_<?php echo $therapy->getId(); ?>">
+                <td><?php echo $therapy->getName(); ?></td>
+                <td>
+                    <button id="view"><?php echo $this->translate('View'); ?></button>
+                    <button id="update"><?php echo $this->translate('Update'); ?></button>
+                    <script type="text/javascript">
+                        $(function() {
+                            $("tr#therapy_<?php echo $therapy->getId(); ?> button#view").button({icons: { primary: "ui-icon-extlink" }});
+                            $("tr#therapy_<?php echo $therapy->getId(); ?> button#view").click(function() {
+                                window.location = '<?php echo $this->url(array('controller' => 'therapy', 'action' => 'view', 'id' => $therapy->getId())); ?>' 
+                            }); 
+
+                            $("tr#therapy_<?php echo $therapy->getId(); ?> button#update").button({icons: { primary: "ui-icon-tag" }});
+                            $("tr#therapy_<?php echo $therapy->getId(); ?> button#update").click(function() {
+                                $.ajax({
+                                    url: '<?php echo $this->url(array('action' => 'update', 'id' => $therapy->getId(), 'format' => 'html')); ?>',
+                                    success: function(data) {
+                                        $("#dialog").html(data);
+                                        $("#dialog").dialog({
+                                            title: 'Update therapy',
+                                            modal: true, 
+                                            resizable: false,
+                                            autoOpen: true,
+                                            open: function(event, ui) { $("#dialog input[type=submit]").button(); },
+                                            close: function(event, ui) { $(this).dialog('destroy'); $(this).html(''); }
+                                        });
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
